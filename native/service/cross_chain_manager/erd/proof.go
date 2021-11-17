@@ -21,6 +21,47 @@ type erdProof struct {
 	address          []byte
 }
 
+// NewErdProof provides an instance for erdProof
+func NewErdProof(
+	dataTrieProof [][]byte,
+	dataTrieRootHash []byte,
+	mainTrieProof [][]byte,
+	mainTrieRootHash []byte,
+	key []byte,
+	address []byte,
+) (*erdProof, error) {
+	var err error
+	dataTrieProof = decodeProof(dataTrieProof)
+	dataTrieRootHash, err = hex.DecodeString(string(dataTrieRootHash))
+	if err != nil || dataTrieRootHash == nil {
+		return nil, ErrInvalidParameters
+	}
+
+	mainTrieProof = decodeProof(mainTrieProof)
+	mainTrieRootHash, err = hex.DecodeString(string(mainTrieRootHash))
+	if err != nil || mainTrieProof == nil {
+		return nil, ErrInvalidParameters
+	}
+
+	key, err = hex.DecodeString(string(key))
+	if err != nil {
+		return nil, ErrInvalidParameters
+	}
+	address = decodeAddress(address)
+	if address == nil {
+		return nil, ErrInvalidParameters
+	}
+
+	return &erdProof{
+		dataTrieRootHash: dataTrieRootHash,
+		dataTrieProof:    dataTrieProof,
+		mainTrieProof:    mainTrieProof,
+		mainTrieRootHash: mainTrieRootHash,
+		key:              key,
+		address:          address,
+	}, nil
+}
+
 func decodeProof(trieProofBytes [][]byte) [][]byte {
 	proof := make([][]byte, 0)
 	for _, hexProof := range trieProofBytes {
