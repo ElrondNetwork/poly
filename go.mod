@@ -37,3 +37,13 @@ require (
 	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110
 	gotest.tools v2.2.0+incompatible
 )
+
+replace github.com/ElrondNetwork/arwen-wasm-vm/v1_2 v1.2.30 => github.com/ElrondNetwork/arwen-wasm-vm v1.2.30
+
+replace github.com/ElrondNetwork/arwen-wasm-vm/v1_3 v1.3.30 => github.com/ElrondNetwork/arwen-wasm-vm v1.3.30
+
+replace github.com/ElrondNetwork/arwen-wasm-vm/v1_4 v1.4.14 => github.com/ElrondNetwork/arwen-wasm-vm v1.4.14
+
+replace github.com/ElrondNetwork/arwen-wasm-vm/v1_4 v1.4.22 => github.com/ElrondNetwork/arwen-wasm-vm v1.4.22
+
+replace github.com/ElrondNetwork/arwen-wasm-vm/v1_3 v1.3.19 => github.com/ElrondNetwork/arwen-wasm-vm v1.3.20-0.20210702122719-c891907234fa
