@@ -3,9 +3,11 @@ module github.com/polynetwork/poly
 go 1.14
 
 require (
+	github.com/ElrondNetwork/elrond-go v1.2.30 // indirect
+	github.com/ElrondNetwork/elrond-go-core v1.1.2
 	github.com/Zilliqa/gozilliqa-sdk v1.2.1-0.20210927032600-4c733f2cb879
-	github.com/btcsuite/btcd v0.20.1-beta
-	github.com/btcsuite/btcutil v1.0.2
+	github.com/btcsuite/btcd v0.22.0-beta
+	github.com/btcsuite/btcutil v1.0.3-0.20201208143702-a53e38424cce
 	github.com/cosmos/cosmos-sdk v0.39.1
 	github.com/ethereum/go-ethereum v1.9.15
 	github.com/gcash/bchd v0.16.5

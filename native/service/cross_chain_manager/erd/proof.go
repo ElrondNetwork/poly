@@ -1,6 +1,12 @@
 package erd
 
-import "encoding/hex"
+import (
+	"encoding/hex"
+
+	"github.com/ElrondNetwork/elrond-go-core/hashing"
+	"github.com/ElrondNetwork/elrond-go-core/hashing/blake2b"
+	"github.com/ElrondNetwork/elrond-go-core/marshal"
+)
 
 const (
 	addressLen = 32
@@ -41,4 +47,10 @@ func decodeAddress(address []byte) []byte {
 	}
 
 	return decodedAddress
+}
+
+func getMarshalizerAndHasher() (marshal.Marshalizer, hashing.Hasher) {
+	marsh := &marshal.GogoProtoMarshalizer{}
+	hash := blake2b.NewBlake2b()
+	return marsh, hash
 }
