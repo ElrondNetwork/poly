@@ -6,6 +6,7 @@ import (
 	"github.com/ElrondNetwork/elrond-go-core/hashing"
 	"github.com/ElrondNetwork/elrond-go-core/hashing/blake2b"
 	"github.com/ElrondNetwork/elrond-go-core/marshal"
+	"github.com/ElrondNetwork/elrond-go/trie"
 )
 
 const (
@@ -60,6 +61,28 @@ func NewErdProof(
 		key:              key,
 		address:          address,
 	}, nil
+}
+
+// Verify verifies the given Merkle proof for both dataTrie and mainTrie
+func (proof *erdProof) Verify() (bool, error) {
+	marsh, hash := getMarshalizerAndHasher()
+
+	verifier, err := trie.NewMerkleProofVerifier(marsh, hash)
+	if err != nil {
+		return false, err
+	}
+
+	isKeyInDataTrie, err := verifier.VerifyProof(proof.dataTrieRootHash, proof.key, proof.dataTrieProof)
+	if err != nil || !isKeyInDataTrie {
+		return false, err
+	}
+
+	isKeyInMainTrie, err := verifier.VerifyProof(proof.mainTrieRootHash, proof.address, proof.mainTrieProof)
+	if err != nil || !isKeyInMainTrie {
+		return false, err
+	}
+
+	return true, nil
 }
 
 func decodeProof(trieProofBytes [][]byte) [][]byte {
