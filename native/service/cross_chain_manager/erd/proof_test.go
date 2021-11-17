@@ -25,6 +25,30 @@ func TestNewProof_WrongParams(t *testing.T) {
 	assert.Nil(t, proof)
 }
 
+func TestVerifyProof_Success(t *testing.T) {
+	dataTrieRootHash, dataTrieProof, mainTrieRootHash, mainTrieProof, key, address := getMockData()
+
+	proof, err := NewErdProof(dataTrieProof, dataTrieRootHash, mainTrieProof, mainTrieRootHash, key, address)
+	assert.Nil(t, err)
+	assert.NotNil(t, proof)
+
+	ok, err := proof.Verify()
+	assert.True(t, ok)
+	assert.Nil(t, err)
+}
+
+func TestVerifyProof_Fail(t *testing.T) {
+	dataTrieRootHash, dataTrieProof, mainTrieRootHash, mainTrieProof, key, address := getMockData()
+	mainTrieRootHash = dataTrieRootHash
+
+	proof, err := NewErdProof(dataTrieProof, dataTrieRootHash, mainTrieProof, mainTrieRootHash, key, address)
+	assert.Nil(t, err)
+	assert.NotNil(t, proof)
+
+	ok, err := proof.Verify()
+	assert.False(t, ok)
+}
+
 func getMockData() ([]byte, [][]byte, []byte, [][]byte, []byte, []byte) {
 	dataTrieRootHash := []byte("66df366985cd68747dc9b0d0e84890a461aabc347bd779a276723a6dd2687e60")
 	dataTrieProof := [][]byte{[]byte("0a070d06050703071012240b73756d000000000000000005004888d06daef6d4ce8a01d72812d08617b4b504a369e101")}
