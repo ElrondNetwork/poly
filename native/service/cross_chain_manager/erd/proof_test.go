@@ -1,34 +1,42 @@
 package erd
 
 import (
+	"github.com/ElrondNetwork/elrond-go-core/hashing/blake2b"
+	"github.com/ElrondNetwork/elrond-go-core/marshal"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewProof(t *testing.T) {
+	marsh := &marshal.GogoProtoMarshalizer{}
+	hash := blake2b.NewBlake2b()
 	dataTrieRootHash, dataTrieProof, mainTrieRootHash, mainTrieProof, key, address := getMockData()
 
-	proof, err := NewErdProof(dataTrieProof, dataTrieRootHash, mainTrieProof, mainTrieRootHash, key, address)
+	proof, err := NewErdProof(dataTrieProof, dataTrieRootHash, mainTrieProof, mainTrieRootHash, key, address, marsh, hash)
 
 	assert.Nil(t, err)
 	assert.NotNil(t, proof)
 }
 
 func TestNewProof_WrongParams(t *testing.T) {
+	marsh := &marshal.GogoProtoMarshalizer{}
+	hash := blake2b.NewBlake2b()
 	dataTrieRootHash, dataTrieProof, mainTrieRootHash, mainTrieProof, key, address := getMockData()
 	mainTrieRootHash = []byte{1}
 
-	proof, err := NewErdProof(dataTrieProof, dataTrieRootHash, mainTrieProof, mainTrieRootHash, key, address)
+	proof, err := NewErdProof(dataTrieProof, dataTrieRootHash, mainTrieProof, mainTrieRootHash, key, address, marsh, hash)
 
 	assert.Equal(t, ErrInvalidParameters, err)
 	assert.Nil(t, proof)
 }
 
 func TestVerifyProof_Success(t *testing.T) {
+	marsh := &marshal.GogoProtoMarshalizer{}
+	hash := blake2b.NewBlake2b()
 	dataTrieRootHash, dataTrieProof, mainTrieRootHash, mainTrieProof, key, address := getMockData()
 
-	proof, err := NewErdProof(dataTrieProof, dataTrieRootHash, mainTrieProof, mainTrieRootHash, key, address)
+	proof, err := NewErdProof(dataTrieProof, dataTrieRootHash, mainTrieProof, mainTrieRootHash, key, address, marsh, hash)
 	assert.Nil(t, err)
 	assert.NotNil(t, proof)
 
@@ -38,10 +46,12 @@ func TestVerifyProof_Success(t *testing.T) {
 }
 
 func TestVerifyProof_Fail(t *testing.T) {
+	marsh := &marshal.GogoProtoMarshalizer{}
+	hash := blake2b.NewBlake2b()
 	dataTrieRootHash, dataTrieProof, mainTrieRootHash, mainTrieProof, key, address := getMockData()
 	mainTrieRootHash = dataTrieRootHash
 
-	proof, err := NewErdProof(dataTrieProof, dataTrieRootHash, mainTrieProof, mainTrieRootHash, key, address)
+	proof, err := NewErdProof(dataTrieProof, dataTrieRootHash, mainTrieProof, mainTrieRootHash, key, address, marsh, hash)
 	assert.Nil(t, err)
 	assert.NotNil(t, proof)
 

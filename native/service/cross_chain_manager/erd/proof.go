@@ -4,7 +4,6 @@ import (
 	"encoding/hex"
 
 	"github.com/ElrondNetwork/elrond-go-core/hashing"
-	"github.com/ElrondNetwork/elrond-go-core/hashing/blake2b"
 	"github.com/ElrondNetwork/elrond-go-core/marshal"
 	"github.com/ElrondNetwork/elrond-go/trie"
 )
@@ -20,6 +19,8 @@ type erdProof struct {
 	mainTrieRootHash []byte
 	key              []byte
 	address          []byte
+	marsh            marshal.Marshalizer
+	hash             hashing.Hasher
 }
 
 // NewErdProof provides an instance for erdProof
@@ -30,6 +31,9 @@ func NewErdProof(
 	mainTrieRootHash []byte,
 	key []byte,
 	address []byte,
+	marsh marshal.Marshalizer,
+	hash hashing.Hasher,
+
 ) (*erdProof, error) {
 	var err error
 	dataTrieProof = decodeProof(dataTrieProof)
@@ -60,14 +64,14 @@ func NewErdProof(
 		mainTrieRootHash: mainTrieRootHash,
 		key:              key,
 		address:          address,
+		marsh:            marsh,
+		hash:             hash,
 	}, nil
 }
 
 // Verify verifies the given Merkle proof for both dataTrie and mainTrie
 func (proof *erdProof) Verify() (bool, error) {
-	marsh, hash := getMarshalizerAndHasher()
-
-	verifier, err := trie.NewMerkleProofVerifier(marsh, hash)
+	verifier, err := trie.NewMerkleProofVerifier(proof.marsh, proof.hash)
 	if err != nil {
 		return false, err
 	}
@@ -111,10 +115,4 @@ func decodeAddress(address []byte) []byte {
 	}
 
 	return decodedAddress
-}
-
-func getMarshalizerAndHasher() (marshal.Marshalizer, hashing.Hasher) {
-	marsh := &marshal.GogoProtoMarshalizer{}
-	hash := blake2b.NewBlake2b()
-	return marsh, hash
 }
